@@ -2,6 +2,7 @@ from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
 from django.utils.translation import gettext_lazy
+from smart_selects.db_fields import ChainedForeignKey
 
 
 class ItemGender(models.Model):
@@ -160,7 +161,11 @@ class Item(models.Model):
 
 class ItemStock(models.Model):
     item = models.ForeignKey(Item, on_delete=models.CASCADE)
-    size = models.ForeignKey(ItemSize, on_delete=models.CASCADE)
+    item_type = models.ForeignKey(ItemType, on_delete=models.CASCADE, null=True)
+    size = ChainedForeignKey(ItemSize, chained_field='item_type',
+                             chained_model_field='item_type',
+                             show_all=False, auto_choose=True,
+                             sort=True)
     quantity = models.IntegerField(validators=(not_negative, ))
 
     def last_n_items_in_stock(self):
