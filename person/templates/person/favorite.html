@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block title %} My Favorite {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% for fav in favorite %}
+    <img src="{{ fav.fav_item.pictures.first.url }}" class="product-photo" alt="{{ fav.fav_item.pictures.first.url }}">
+{% endfor %}
+{% endblock %}

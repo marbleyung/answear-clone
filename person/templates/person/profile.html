@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% block title %} My Profile {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+{% for message in messages %}
+<div class="alert alert-danger" role="alert" id="error-alert">
+  {{message}}
+</div>
+{% endfor %}
+<div class="list-group list-group-flush">
+  <a href="{% url 'person:me' %}" class="list-group-item list-group-item-action active" aria-current="true">My Account</a>
+  <a href="#" class="list-group-item list-group-item-action">My Orders</a>
+  <a href="#" class="list-group-item list-group-item-action">Contact Us</a>
+</div>
+<div class="user-info">
+  <div class="userdata-container">
+  <ul class="userdata-list">
+    {% for key, value in user.items %}
+    {% if key == 'name' %}
+        <li class="userdata-list-item"><strong>{{ value }}</strong></li>
+    {% else %}
+        <li class="userdata-list-item">{{ value }}</li>
+    {% endif %}
+    {% endfor %}
+  </ul>
+  <a class="userdata-edit icon" href="{% url 'acc:edit-userdata' %}"><i class="fa-solid fa-pencil"></i></a>
+</div>
+  <a class="userdata-change-password" href="{% url 'password_change' %}">Change Password</a>
+<div class="persondata-block">
+  <div class="persondata-container">
+    {% for person in persons %}
+      <ul class="persondata-list">
+        {% for field, value in person.fields.items %}
+          {% if field != 'user' and value %}
+            <li class="userdata-list-item">{{ value }}</li>
+          {% endif %}
+        {% endfor %}
+      </ul>
+    {% if editable %}
+      <a class="persondata-edit icon" href="{% url 'person:edit-persondata' pk=person.pk %}"><i class="fa-solid fa-pencil"></i></a>
+      <a class="persondata-edit icon" href="{% url 'person:delete-persondata' pk=person.pk %}"><i class="fa-solid fa-trash"></i></a>
+    {% endif %}
+    {% endfor %}
+</div>
+    <a href="{% url 'person:add-persondata' %}" class="persondata-add-person">Add a person</a>
+</div>
+</div>
+<script>
+const links = document.querySelectorAll('.list-group-item');
+
+// Loop through each link and add an event listener
+links.forEach(link => {
+  link.addEventListener('click', event => {
+    // Prevent the default behavior of the link
+    event.preventDefault();
+
+    // Add an "active" class to the clicked link
+    link.classList.add('active');
+
+    // Remove the "active" class from all the other links
+    links.forEach(otherLink => {
+      if (otherLink !== link) {
+        otherLink.classList.remove('active');
+      }
+    });
+  });
+});
+
+function fadeOut(element) {
+    var opacity = 1;
+    var timer = setInterval(function() {
+      if (opacity <= 0.1) {
+        clearInterval(timer);
+        element.style.display = 'none';
+      }
+      element.style.opacity = opacity;
+      opacity -= 0.1;
+    }, 50);
+  }
+
+  // Hide the error alert after 5 seconds
+  setTimeout(function() {
+    var errorAlert = document.getElementById("error-alert");
+    fadeOut(errorAlert);
+  }, 2500);
+
+</script>
+{% endblock %}

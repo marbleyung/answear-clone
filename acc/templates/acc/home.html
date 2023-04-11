@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block title %} Welcome {% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% for message in messages %}
+<div class="alert alert-success" role="alert" id="alert-success">
+  {{message}}
+</div>
+{% endfor %}
+<script>
+
+function fadeOut(element) {
+    var opacity = 1;
+    var timer = setInterval(function() {
+      if (opacity <= 0.1) {
+        clearInterval(timer);
+        element.style.display = 'none';
+      }
+      element.style.opacity = opacity;
+      opacity -= 0.1;
+    }, 50);
+  }
+
+  // Hide the error alert after 5 seconds
+  setTimeout(function() {
+    var successAlert = document.getElementById("alert-success");
+    fadeOut(successAlert);
+  }, 2500);
+</script>
+{% endblock %}

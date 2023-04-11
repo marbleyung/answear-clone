@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang=en>
+{% load static %}
+{% load crispy_forms_tags %}
+
+<head>
+    <meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<link rel="stylesheet" href="{% static 'bootstrap/css/bootstrap.min.css' %}">
+	<link href="https://fonts.googleapis.com/css2?family=Material+Icons"
+      rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script src="https://kit.fontawesome.com/e06a15cd5f.js" crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="{% static 'css/base.css' %}">
+	<title>{% block title %} base {% endblock %}</title>
+</head>
+
+<body>
+{% include 'snippets/header.html' %}
+
+
+
+
+<div class="main">
+	{% block content %}
+	{% endblock content %}
+</div>
+
+{% include 'snippets/footer.html' %}
+
+<script src="{% static 'bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+</body>
+</html>

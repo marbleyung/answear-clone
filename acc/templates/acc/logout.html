@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %} Logout {% endblock %}
+{% block content %} 
+{% load crispy_forms_tags %}
+
+<div class="container py-5">
+  {{ error }}
+  <h1>Logout</h1>
+    <a href="{% url 'acc:logout' %}" class="btn btn-primary" type="submit">Logout</a>
+</div>
+
+{% endblock %}

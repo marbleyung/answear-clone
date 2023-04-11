@@ -1,0 +1,100 @@
+{% load crispy_forms_tags %}
+<header class="header">
+  <div class="d-flex justify-content-between">
+  <ul class="nav nav-tabs justify-content-start" >
+    {% for gender in genders %}
+      {% if gender.slug == gender_slug %}
+        <li class="nav-item">
+          <a class="nav-link active" href="{% url 'shop:gender' gender_slug=gender.slug %}">{{gender}}</a>
+        </li>
+      {% else %}
+        <li class="nav-item">
+          <a class="nav-link" href="{% url 'shop:gender' gender_slug=gender.slug %}">{{gender}}</a>
+        </li>
+      {% endif %}
+    {% endfor %}
+  </ul>
+  <ul class="nav justify-content-end">
+
+  {% if request.user.is_authenticated %}
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'person:me' %}"><i class="fa-solid fa-user"></i></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'person:favorite' %}"><i class="fa-solid fa-heart"></i></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'acc:logout' %}"><i class="fa-solid fa-right-to-bracket"></i></a>
+  </li>
+
+  {% else %}
+  <li class="nav-item">
+    <a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'acc:login' %}"><i class="fa-solid fa-user"></i></a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="{% url 'acc:register' %}"><i class="fa-solid fa-user-plus"></i></a>
+  </li>
+
+  {% endif %}
+</ul>
+
+</div>
+
+<div class="types-header d-flex justify-content-between">
+  <ul class="types-list">
+    {% if gender_slug %}
+    {% for type in header_types %}
+    {% if type.slug == type_slug %}
+    <li class="types-list-item">
+      <a class="types-list-link active" href="{% url 'shop:type' gender_slug type.slug %}">{{ type }}</a>
+    </li>
+    {% else %}
+    <li class="types-list-item">
+      <a class="types-list-link" href="{% url 'shop:type' gender_slug type.slug %}">{{ type }}</a>
+    </li>
+    {% endif %}
+  {% endfor %}
+    {% else %}
+        {% for type in header_types %}
+    {% if type.slug == type_slug %}
+    <li class="types-list-item">
+      <a class="types-list-link active" href="{% url 'shop:type' 'male' type.slug %}">{{ type }}</a>
+    </li>
+    {% else %}
+    <li class="types-list-item">
+      <a class="types-list-link" href="{% url 'shop:type' 'male' type.slug %}">{{ type }}</a>
+    </li>
+    {% endif %}
+  {% endfor %}
+    {% endif %}
+  </ul>
+  <form class="search-bar" onsubmit="return executeQuery();">
+    <input type="text" class="form-control" name="q" id="id_q_large" placeholder="Search...">
+  </form>
+</div>
+</header>
+{% if gender_slug %}
+<script type="text/javascript">
+	function executeQuery() {
+		var query = ""
+		query = document.getElementById('id_q_large').value;
+	    window.location.replace("{% url 'shop:search_gender' gender_slug %}?q=" + query)
+	    return false
+	}
+</script>
+{% else %}
+<script type="text/javascript">
+	function executeQuery() {
+		var query = ""
+		query = document.getElementById('id_q_large').value;
+	    window.location.replace("{% url 'shop:search_gender' 'male' %}?q=" + query)
+	    return false
+	}
+</script>
+{% endif %}

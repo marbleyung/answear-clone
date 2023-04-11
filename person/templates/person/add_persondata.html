@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+{% block title %} Edit Profile {% endblock %}
+{% load crispy_forms_tags %}
+{% block content %}
+<form method="POST" class="persondata-edit-form">
+    {% csrf_token %}
+    {{ form|crispy }}
+    <div class="btns">
+    <button class="btn btn-primary" type="submit">Submit</button>
+        <a href="{% url 'person:me' %}" class="btn btn-primary">Cancel</a>
+<!--    <input onclick="window.history.go(-1); return false;" type="submit" value="Cancel" class="btn btn-primary"/>-->
+    </div>
+</form>
+
+{% endblock %}

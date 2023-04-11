@@ -1,0 +1,140 @@
+*{
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    }
+
+
+a, li, p, h1, h2, h3, h4, h5, h6, span, .nav-item, .nav-link {
+    text-decoration: none;
+    color: black;
+}
+
+ul {
+    list-style-type: none;
+}
+
+
+.header {
+    margin-bottom: 40px;
+}
+
+.list-group {
+    margin-bottom: 40px;
+}
+.list-group-item {
+    max-width: 250px;
+}
+
+.types-list {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+.container-menu-and-items {
+    display: flex;
+    justify-content: space-between;
+}
+
+.accordion {
+    max-width: 250px;
+    width: 250px;
+    height: 100vh;
+    position: -webkit-sticky;
+    position: sticky;
+    top: 0;
+}
+
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.userdata-container, .persondata-container {
+    background-color: #DADADA;
+    display: flex;
+    max-width: 500px;
+    justify-content: space-between;
+    margin-bottom: 40px;
+}
+
+
+.userdata-list-item {
+    width: 100px;
+}
+
+.nav-link {
+    font-size: 20px;
+}
+
+
+.persondata-block {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.types-list-link:hover{
+    color: blue;
+}
+.active {
+    font-weight: 700;
+}
+
+.product-container{
+    display: flex;
+}
+
+.product-pictures-container{
+    display: flex;
+}
+
+.product-pictures-mini-container {
+    display: flex;
+    flex-direction: column;
+    margin: 0 40px;
+}
+
+.product-photo-mini {
+    max-width: 80px;
+    max-height: 120px;
+    margin-bottom: 20px;
+}
+
+
+
+.product-photo {
+    max-width: 360px;
+    max-height: 540px;
+    margin: 0 20px;
+}
+
+.product-name-and-brand, .product-add-buttons {
+    display: flex;
+    justify-content: space-between;
+}
+
+.add-to-cart-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: black;
+    color: white;
+    width: 200px;
+    gap: 10px;
+}
+
+.product-to-cart {
+    color: white;
+}
+
+.product-to-fav {
+    color: black;
+}
+
+.liked {
+    color: red;
+}
