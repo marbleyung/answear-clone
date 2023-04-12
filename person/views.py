@@ -87,4 +87,9 @@ def delete_persondata(request, pk):
 @login_required
 def favorite(request):
     favorite = Favorites.objects.filter(user=request.user)
+    print(favorite)
     return render(request, 'person/favorite.html', {'favorite': favorite})
+
+
+def cart(request):
+    return render(request, 'person/cart.html')

@@ -9,4 +9,5 @@ urlpatterns = [
     path('add-persondata/', add_persondata, name='add-persondata'),
     path('delete-persondata/<int:pk>', delete_persondata, name='delete-persondata'),
     path('favorite/', favorite, name='favorite'),
+    path('cart/', cart, name='cart'),
 ]

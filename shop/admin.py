@@ -1,4 +1,3 @@
-from django import forms
 from django.contrib import admin
 from django.contrib.admin import StackedInline
 
@@ -35,12 +34,14 @@ class ItemTypeAdmin(admin.ModelAdmin):
     list_display = ("type",)
     prepopulated_fields = {"slug": ("type",)}  # new
 
-
 class ItemCategoryAdmin(admin.ModelAdmin):
     list_display = ("category",)
     prepopulated_fields = {"slug": ("category",)}  # new
 
 
+class ItemSizeAdmin(admin.ModelAdmin):
+    list_display = ("size",)
+    prepopulated_fields = {"slug": ("size",)}  # new
 class ItemStockAdmin(admin.ModelAdmin):
     def formfield_for_foreignkey(self, db_field, request, **kwargs):
         if db_field.name == "item":
@@ -52,7 +53,7 @@ admin.site.register(ItemPicture, )
 admin.site.register(ItemGender, ItemGenderAdmin)
 admin.site.register(ItemType, ItemTypeAdmin)
 admin.site.register(ItemCategory, ItemCategoryAdmin)
-admin.site.register(ItemSize)
+admin.site.register(ItemSize, ItemSizeAdmin)
 admin.site.register(ItemBrandSegment)
 admin.site.register(ItemBrand)
 admin.site.register(ItemMaterial)

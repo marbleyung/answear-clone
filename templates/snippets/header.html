@@ -24,7 +24,7 @@
     <a class="nav-link" href="{% url 'person:favorite' %}"><i class="fa-solid fa-heart"></i></a>
   </li>
   <li class="nav-item">
-    <a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+    <a class="nav-link" href="{% url 'person:cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="{% url 'acc:logout' %}"><i class="fa-solid fa-right-to-bracket"></i></a>
@@ -32,7 +32,7 @@
 
   {% else %}
   <li class="nav-item">
-    <a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i></a>
+    <a class="nav-link" href="{% url 'person:cart' %}"><i class="fa-solid fa-cart-shopping"></i></a>
   </li>
   <li class="nav-item">
     <a class="nav-link" href="{% url 'acc:login' %}"><i class="fa-solid fa-user"></i></a>

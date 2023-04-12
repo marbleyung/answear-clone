@@ -165,15 +165,37 @@ def category_view(request, gender_slug, type_slug, category_slug):
 
 
 def item_view(request, item_slug):
-    favorites = Favorites.objects.filter(user=request.user)
-    favorites = [fav.fav_item for fav in favorites]
     types = ItemType.objects.all()
     item = Item.objects.get(slug=item_slug)
+    sizes = ItemStock.objects.filter(item=item)
     gender_slug = item.item_gender.slug
     context = {'item_slug': item_slug, 'item': item,
                'types': types, 'gender_slug': gender_slug,
-               'favorites': favorites}
+               'sizes': sizes,}
+    if request.user.is_authenticated:
+        favorite = Favorites.objects.filter(user=request.user)
+        favorite = [fav.fav_item for fav in favorite]
+        context['favorite'] = favorite
     return render(request, 'item.html', context=context)
+
+
+def select_size(request, item_slug, size_slug):
+    item = Item.objects.get(slug=item_slug)
+    sizes = ItemStock.objects.filter(item=item)
+    itemstock = ItemStock.objects.get(item__slug=item_slug, size__slug=size_slug)
+    context = {'itemstock': itemstock, 'item': item, 'sizes': sizes, 'size_slug': size_slug}
+    return render(request, 'item.html', context=context)
+
+
+def add_to_cart(request, item_slug, size_slug):
+    size = ItemSize.objects.get(slug=size_slug)
+    itemstock = ItemStock.objects.get(item__slug=item_slug, size=size)
+    if itemstock.quantity == 0:
+        return redirect('shop:item', item_slug)
+
+    session = request.session
+    print(session)
+    return redirect('shop:item', item_slug)
 
 
 @login_required
@@ -192,3 +214,4 @@ def delete_from_favorite(request, item_slug):
     item = Item.objects.get(slug=item_slug)
     Favorites.objects.get(fav_item=item, user=request.user).delete()
     return redirect('shop:item', item_slug)
+

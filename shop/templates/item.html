@@ -30,23 +30,32 @@
             <p class="card-text" style="color: red;">{{ item.final_price }} UAH</p>
             {% endif %}
             <p class="product-price">{{ item.get_price }} UAH </p>
-            <label for="sizes">Choose a size:</label>
-            <select name="size" id="sizes">
-                {% for size in item.item_size.all %}
-                <option value="product-size">{{ size }}</option>
+            <p>Sizes</p>
+            <ul class="size-list">
+                {% for size in sizes %}
+                {% if size.quantity > 1 %}
+                    <a href="{% url 'shop:select_size' item_slug=item.slug size_slug=size.size.slug %}"><li class="size-element">{{size.size}}</li></a>
+                {% else %}
+                    <a href="{% url 'shop:select_size' item_slug=item.slug size_slug=size.size.slug %}"><li class="size-element disabled">{{size.size}}</li></a>
+                 {% endif %}
                 {% endfor %}
-            </select>
+            </ul>
             <br>
             <hr>
             <div class="product-add-buttons">
+                {% if size_slug %}
                 <div class="add-to-cart-container">
-                    <a href="#" class="product-to-cart">Add to Cart</a>
+                    <a href="{% url 'shop:add_to_cart' item_slug=item.slug size_slug=size_slug %}" class="product-to-cart">Add to Cart</a>
                 <i class="fa-sharp fa-solid fa-cart-shopping"></i></div>
-
-                {% if item in favorites %}
-                    <a href="{% url 'shop:delete_from_favorite' item_slug=item.slug %}" class="product-to-fav liked"><i class="fa-solid fa-heart"></i></a>
-                {% else %}
-                    <a href="{% url 'shop:add_to_favorite' item_slug=item.slug %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
+                {% endif %}
+                {% if request.user.is_authenticated %}
+                    {% if item in favorite %}
+                        <a href="{% url 'shop:delete_from_favorite' item_slug=item.slug %}" class="product-to-fav liked"><i class="fa-solid fa-heart"></i></a>
+                    {% else %}
+                        <a href="{% url 'shop:add_to_favorite' item_slug=item.slug %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
+                    {% endif %}
+                    {% else %}
+                        <a href="{% url 'acc:login'  %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
                 {% endif %}
             </div>
         </div>
