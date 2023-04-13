@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core import serializers
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from acc.models import *
 from .models import *
 from .forms import *
@@ -91,5 +91,37 @@ def favorite(request):
     return render(request, 'person/favorite.html', {'favorite': favorite})
 
 
+def get_cart(request):
+    context = {}
+    if not request.session.session_key:
+        request.session.create()
+    session = request.session.session_key
+
+    try:
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+        else:
+            cart = Cart.objects.get(session=session)
+    except Cart.DoesNotExist:
+        cart = None
+    context['cart'] = cart
+    return context
+
+
 def cart(request):
-    return render(request, 'person/cart.html')
+    context = get_cart(request)
+    cart = context['cart']
+    if cart:
+        item_in_cart = ItemInCart.objects.filter(cart=cart)
+    else:
+        item_in_cart = None
+    context['item_in_cart'] = item_in_cart
+    return render(request, 'person/cart.html', context=context)
+
+
+def clear_cart(request):
+    context = get_cart(request)
+    cart = context['cart']
+    if cart:
+        context['cart'].delete()
+    return render(request, 'person/cart.html', context=context)

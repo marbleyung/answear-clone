@@ -70,7 +70,6 @@ ul {
     font-size: 20px;
 }
 
-
 .persondata-block {
     display: flex;
     flex-direction: column;
@@ -104,8 +103,6 @@ ul {
     margin-bottom: 20px;
 }
 
-
-
 .product-photo {
     max-width: 360px;
     max-height: 540px;
@@ -115,6 +112,13 @@ ul {
 .product-name-and-brand, .product-add-buttons {
     display: flex;
     justify-content: space-between;
+}
+
+.product-details {
+    max-width: 400px;
+    font-size: 12px;
+    font-weight: 500;
+    text-align: justify;
 }
 
 .add-to-cart-container {
@@ -137,4 +141,66 @@ ul {
 
 .liked {
     color: red;
+}
+
+.cart {
+    margin: 40px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.cart-items {
+    background: #EEE;
+}
+
+.cart-empty {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.cart-empty-link {
+    padding: 5px 50px;
+    border: 1px solid #000;
+        font-weight: 500;
+}
+
+.cart-empty-gid {
+    margin: 200px 300px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 40px;
+    font-size: 14px;
+}
+
+.login-button {
+    padding: 5px 100px;
+    border: 1px solid #000;
+    background: black;
+    color: white;
+    font-weight: 500;
+}
+
+.size-element {
+    font-weight: 500;
+}
+
+.disabled {
+    color: #aaa;
+}
+
+.product-photo-cart {
+    width: 140px;
+    height: 220px;
+    margin: 15px 25px;
+}
+
+.cart-item-card {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }

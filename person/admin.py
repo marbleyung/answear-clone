@@ -13,3 +13,4 @@ class PersonAdmin(admin.ModelAdmin):
 
 admin.site.register(Person, PersonAdmin)
 admin.site.register(Favorites)
+admin.site.register(Cart)

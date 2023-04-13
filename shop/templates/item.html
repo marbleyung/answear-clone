@@ -2,14 +2,20 @@
 {% block title %} Welcome {% endblock %}
 {% block content %}
 {% load crispy_forms_tags %}
-
+{% if messages %}
+{% for message in messages %}
+    {{ message }}
+{% endfor %}
+<br>
+{% endif %}
 <span>Home -> {{ item.item_gender }} -> {{ item.item_type }} -> {{ item.item_category }}</span>
 <br>
     <div class="product-container">
         <div class="product-pictures-container">
             <div class="product-pictures-mini-container">
             {% for picture in item.pictures.all %}
-                <img src="{{ picture.get_url }}" class="product-photo-mini" alt="{{ picture }}">
+                <a href="{{picture.get_url }}">
+                    <img src="{{ picture.get_url }}" class="product-photo-mini" alt="{{ picture }}"></a>
             {% endfor %}
             </div>
             <div class="product-pictures-macro-container">
@@ -21,7 +27,7 @@
         <div class="product-info">
             <div class="product-name-and-brand">
                 <p class="product-name">{{ item }}</p>
-                <p class="product-brand">{{ item.item_brand}} </p>
+                <img class="product-brand" src="{{ item.item_brand.logo.url }}">
             </div>
             {% for color in item.item_color.all %}
             <p class="product-color">{{ color }} </p>
@@ -36,26 +42,29 @@
                 {% if size.quantity > 1 %}
                     <a href="{% url 'shop:select_size' item_slug=item.slug size_slug=size.size.slug %}"><li class="size-element">{{size.size}}</li></a>
                 {% else %}
-                    <a href="{% url 'shop:select_size' item_slug=item.slug size_slug=size.size.slug %}"><li class="size-element disabled">{{size.size}}</li></a>
+                    <li class="size-element disabled">{{size.size}}</li>
                  {% endif %}
                 {% endfor %}
             </ul>
+
             <br>
+            <p class="product-details">{{ item.details }}</p>
             <hr>
             <div class="product-add-buttons">
                 {% if size_slug %}
                 <div class="add-to-cart-container">
-                    <a href="{% url 'shop:add_to_cart' item_slug=item.slug size_slug=size_slug %}" class="product-to-cart">Add to Cart</a>
-                <i class="fa-sharp fa-solid fa-cart-shopping"></i></div>
-                {% endif %}
+                    <a href="{% url 'shop:add_to_cart' item_slug=item.slug size_slug=size_slug %}" class="product-to-cart">
+                        Add to Cart<i class="fa-sharp fa-solid fa-cart-shopping"></i></a></div>
+                {% else %}
                 {% if request.user.is_authenticated %}
                     {% if item in favorite %}
-                        <a href="{% url 'shop:delete_from_favorite' item_slug=item.slug %}" class="product-to-fav liked"><i class="fa-solid fa-heart"></i></a>
+                        <a href="{% url 'shop:delete_from_favorite' item_slug=item.slug  %}" class="product-to-fav liked"><i class="fa-solid fa-heart"></i></a>
                     {% else %}
                         <a href="{% url 'shop:add_to_favorite' item_slug=item.slug %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
                     {% endif %}
                     {% else %}
                         <a href="{% url 'acc:login'  %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
+                {% endif %}
                 {% endif %}
             </div>
         </div>

@@ -1,7 +1,85 @@
 {% extends 'base.html' %}
-{% block title %} Welcome {% endblock %}
+{% block title %} Cart | Site {% endblock %}
 {% block content %}
 {% load crispy_forms_tags %}
+{% if messages %}
+{% for message in messages %}
+    {{ message }}
+{% endfor %}
+{% endif %}
+{% if cart and item_in_cart %}
+<div class="cart">
+    <div class="cart-items">
+    <h5>Cart</h5>
+        {% for item in item_in_cart %}
+        {% if item.quantity > 0 %}
+        <div class="cart-item-card">
+        <img src="{{ item.item.item.pictures.first.get_url }}" class="product-photo-cart"
+                 alt="{{ item.item.item.pictures.first.get_url }}">
+            <div class="cart-item-card-text">
+                <p class="cart-item-card-product-info"><strong>{{ item.item }}</strong></p>
+                <p class="cart-item-card-product-info"><strong>Size:</strong> {{ item.item.size }}</p>
+                <a href="{% url 'shop:add_to_cart' item_slug=item.item.item.slug size_slug=item.item.size.slug %}">
+                    <i class="fa-solid fa-plus"></i></a>
+                <span class="cart-item-card-product-info">{{ item.quantity }}</span>
+                <a href="{% url 'shop:delete_from_cart' item_slug=item.item.item.slug size_slug=item.item.size.slug %}">
+                    <i class="fa-solid fa-minus"></i></a>
+                <p class="cart-item-card-product-info"><strong>Total: </strong><span class="total-price">{{ item.get_total }} UAH</span></p>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+    <div class="cart-info">
+        <div id="sumOutput"></div>
+    <a href="{% url 'person:clear_cart' %}">Clear cart</a>
+    </div>
+</div>
+<hr>
+{% else %}
+    <div class="cart-empty">
+    <h2 class="cart-empty-title">Your cart is empty</h2>
+        <a href="{% url 'shop:home' %}" class="cart-empty-link">To the store</a></div>
+    <div class="cart-empty-gid">
+        <div class="cart-empty-login">
+            <h5>Where are your items?</h5>
+            <p>Make sure, you have been logged in</p>
+            <p>Extra info</p>
+            <a href="{% url 'acc:login' %}" class="login-button">Login</a>
+        </div>
+        <div class="cart-empty-error">
+            <h5>Logged in and still don't see any items?</h5>
+            <p>Extra info 1</p>
+            <p>Extra info 2</p>
+            <a href=# class="login-button">Contact us</a>
+        </div>
+    </div>
+{% endif %}
 
 
+<script>
+    var cartItems = $(".total-price");
+    console.log('Hello');
+    // Creating an array to store the text values
+    var textValues = [];
+
+    // Looping through each element and extracting the text value
+    cartItems.each(function() {
+      var textValue = $(this).text().trim();
+
+      // Parsing the text value as a number and adding it to the array
+      var parsedValue = parseFloat(textValue);
+      if (!isNaN(parsedValue)) {
+        textValues.push(parsedValue);
+      }
+    });
+
+    // Calculating the sum of the text values
+    var sum = textValues.reduce(function(a, b) {
+      return a + b;
+    }, 0);
+
+    console.log("Sum of text values:", sum);
+    $("#sumOutput").html("Total price: " + sum);
+</script>
 {% endblock %}

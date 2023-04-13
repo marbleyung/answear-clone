@@ -1,6 +1,7 @@
+from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.http import JsonResponse
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic import ListView
 
@@ -156,7 +157,8 @@ def category_view(request, gender_slug, type_slug, category_slug):
     categories = ItemCategory.objects.filter(type__slug=type_slug)
     items = Item.objects.filter(item_gender__slug=gender_slug,
                                 item_type__slug=type_slug,
-                                item_category__slug=category_slug)
+                                item_category__slug=category_slug,
+                                quantity__gt=0)
     context['categories'] = categories
     context['items'] = items
     context['types'] = types
@@ -165,6 +167,7 @@ def category_view(request, gender_slug, type_slug, category_slug):
 
 
 def item_view(request, item_slug):
+
     types = ItemType.objects.all()
     item = Item.objects.get(slug=item_slug)
     sizes = ItemStock.objects.filter(item=item)
@@ -172,6 +175,7 @@ def item_view(request, item_slug):
     context = {'item_slug': item_slug, 'item': item,
                'types': types, 'gender_slug': gender_slug,
                'sizes': sizes,}
+
     if request.user.is_authenticated:
         favorite = Favorites.objects.filter(user=request.user)
         favorite = [fav.fav_item for fav in favorite]
@@ -190,12 +194,55 @@ def select_size(request, item_slug, size_slug):
 def add_to_cart(request, item_slug, size_slug):
     size = ItemSize.objects.get(slug=size_slug)
     itemstock = ItemStock.objects.get(item__slug=item_slug, size=size)
-    if itemstock.quantity == 0:
-        return redirect('shop:item', item_slug)
+    referer = request.META.get("HTTP_REFERER")
 
-    session = request.session
-    print(session)
-    return redirect('shop:item', item_slug)
+    if itemstock.quantity <= 0:
+        return redirect('shop:item', item_slug)
+    if not request.session.session_key:
+        request.session.create()
+    session = request.session.session_key
+    try:
+        if request.user.is_authenticated:
+            cart = Cart.objects.get_or_create(user=request.user)
+        else:
+            cart = Cart.objects.get_or_create(session=session)
+        item_in_cart = ItemInCart.objects.get_or_create(cart=cart[0], item=itemstock)
+        if item_in_cart[0].quantity >= itemstock.quantity:
+            messages.error(request=request, message=f"You can't buy more than {itemstock.quantity} pieces of this item")
+            return HttpResponseRedirect(referer)
+        cart[0].items.add(itemstock)
+        cart[0].save()
+        item_in_cart[0].quantity += 1
+        item_in_cart[0].save()
+    except Exception as e:
+        print('views215', e)
+        return redirect('/')
+    return HttpResponseRedirect(referer)
+
+
+def delete_from_cart(request, item_slug, size_slug):
+    size = ItemSize.objects.get(slug=size_slug)
+    itemstock = ItemStock.objects.get(item__slug=item_slug, size=size)
+    if not request.session.session_key:
+        request.session.create()
+    session = request.session.session_key
+    try:
+        if request.user.is_authenticated:
+            cart = Cart.objects.get(user=request.user)
+        else:
+            cart = Cart.objects.get(session=session)
+        item_in_cart = ItemInCart.objects.get(cart=cart, item=itemstock)
+        if item_in_cart.quantity > 1:
+            item_in_cart.quantity -= 1
+            item_in_cart.save()
+        else:
+            item_in_cart.delete()
+            print(cart.items.all())
+    except Exception as e:
+        print('line235', e)
+        return redirect('/')
+    referer = request.META.get("HTTP_REFERER")
+    return HttpResponseRedirect(referer)
 
 
 @login_required

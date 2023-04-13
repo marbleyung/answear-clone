@@ -1,6 +1,3 @@
-import uuid
-
-from django.contrib.sessions.models import Session
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.urls import reverse
@@ -60,6 +57,7 @@ class ItemSize(models.Model):
         return reverse('gender', kwargs={'slug': self.slug})
 
 
+
 class ItemBrandSegment(models.Model):
     brand_segment = models.CharField(max_length=25, unique=True, null=True)
 
@@ -75,6 +73,7 @@ class ItemBrand(models.Model):
 
     def __str__(self):
         return self.brand
+
 
 
 class ItemMaterial(models.Model):
@@ -133,7 +132,7 @@ class Item(models.Model):
     on_sale = models.BooleanField(default=False)
     discount = models.IntegerField(default=0, validators=(not_negative, ))
     final_price = models.IntegerField(default=0, validators=(not_negative, ))
-    quantity = models.IntegerField(validators=(not_negative, ), default=1)
+    quantity = models.PositiveSmallIntegerField(default=0)
     details = models.TextField(null=True, blank=True)
     pictures = models.ManyToManyField(ItemPicture, default=None)
     slug = models.SlugField(null=True)
@@ -160,7 +159,8 @@ class Item(models.Model):
             self.discount, self.price, self.final_price = int(self.discount), int(self.price), int(self.final_price)
             discount = self.discount / 100
             self.final_price = (self.price - (self.price * discount)) // 100
-        return self.final_price
+            return int(self.final_price)
+        return self.get_price()
 
     def save(self, *args, **kwargs):
         if self.item_category:
@@ -177,6 +177,9 @@ class ItemStock(models.Model):
                              sort=True)
     quantity = models.IntegerField(validators=(not_negative, ))
 
+    class Meta:
+        unique_together = ('item', 'size',)
+
     def __str__(self):
         self.out_of_stock()
         return f"{self.item} {self.size}"
@@ -189,9 +192,20 @@ class ItemStock(models.Model):
         if int(self.quantity) == 0:
             return f"{self.item} {self.size} is currently out of stock"
 
+    def save(self, *args, **kwargs):
+        if self.quantity:
+            self.item.quantity += self.quantity
+            self.item.save()
+        super().save(*args, **kwargs)
+
+    def delete(self, *args, **kwargs):
+        self.item.quantity -= self.quantity
+        self.item.save()
+        super(ItemStock, self).delete(*args, **kwargs)
+
 
 class Cart(models.Model):
-    session = models.ForeignKey(Session, on_delete=models.SET_NULL, blank=True, null=True)
+    session = models.CharField(unique=True, max_length=255, null=True)
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, null=True, blank=True)
     items = models.ManyToManyField(ItemStock, default=None)
     created_at = models.DateTimeField(auto_now_add=True, null=True)
@@ -199,4 +213,19 @@ class Cart(models.Model):
     have_been_bought = models.BooleanField(default=False)
 
     def __str__(self):
+        if self.user:
+            return f"{self.pk} {self.user}"
         return f"{self.pk} {self.session}"
+
+
+class ItemInCart(models.Model):
+    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, null=True, blank=True)
+    item = models.ForeignKey(ItemStock, on_delete=models.CASCADE, null=True, blank=True)
+    quantity = models.PositiveSmallIntegerField(null=True, default=0)
+
+    def __str__(self):
+        return f"{self.cart} {self.item} {self.quantity}"
+
+    def get_total(self):
+        total = int(self.quantity) * self.item.item.get_final_price()
+        return total
