@@ -11,6 +11,7 @@
 <div class="cart">
     <div class="cart-items">
     <h5>Cart</h5>
+        <hr>
         {% for item in item_in_cart %}
         {% if item.quantity > 0 %}
         <div class="cart-item-card">
@@ -19,22 +20,46 @@
             <div class="cart-item-card-text">
                 <p class="cart-item-card-product-info"><strong>{{ item.item }}</strong></p>
                 <p class="cart-item-card-product-info"><strong>Size:</strong> {{ item.item.size }}</p>
-                <a href="{% url 'shop:add_to_cart' item_slug=item.item.item.slug size_slug=item.item.size.slug %}">
-                    <i class="fa-solid fa-plus"></i></a>
-                <span class="cart-item-card-product-info">{{ item.quantity }}</span>
                 <a href="{% url 'shop:delete_from_cart' item_slug=item.item.item.slug size_slug=item.item.size.slug %}">
                     <i class="fa-solid fa-minus"></i></a>
+                <span class="cart-item-card-product-info">{{ item.quantity }}</span>
+                <a href="{% url 'shop:add_to_cart' item_slug=item.item.item.slug size_slug=item.item.size.slug %}">
+                    <i class="fa-solid fa-plus"></i></a>
+
                 <p class="cart-item-card-product-info"><strong>Total: </strong><span class="total-price">{{ item.get_total }} UAH</span></p>
+                {% if request.user.is_authenticated %}
+                    {% if item.item.item in favorite %}
+
+                        <a href="{% url 'shop:delete_from_favorite' item_slug=item.item.item.slug  %}" class="product-to-fav liked"><i class="fa-solid fa-heart"></i></a>
+                    {% else %}
+                        <a href="{% url 'shop:add_to_favorite' item_slug=item.item.item.slug %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
+                    {% endif %}
+                    {% else %}
+                        <a href="{% url 'acc:login'  %}" class="product-to-fav"><i class="fa-solid fa-heart"></i></a>
+                {% endif %}
             </div>
         </div>
+        <hr>
         {% endif %}
         {% endfor %}
     </div>
     <div class="cart-info">
+        <input type="text" placeholder="Promocode">
+        <div class="check-info">
+            <p><strong>Total</strong></p>
+            <hr>
+        </div>
         <div id="sumOutput"></div>
-    <a href="{% url 'person:clear_cart' %}">Clear cart</a>
+        <div class="clear-or-buy">
+            {% if not request.user.is_authenticated %}
+                <a href="{% url 'checkout:login' %}" class="buy-btn">Buy</a>
+            {% else %}
+                <a href="{% url 'checkout:main' %}" class="buy-btn">Buy</a>
+            {% endif %}
+                <a href="{% url 'person:clear_cart' %}" class="clear-btn">Clear cart</a>
+        </div>
     </div>
-</div>
+    </div>
 <hr>
 {% else %}
     <div class="cart-empty">

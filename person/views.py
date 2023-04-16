@@ -102,19 +102,27 @@ def get_cart(request):
             cart = Cart.objects.get(user=request.user)
         else:
             cart = Cart.objects.get(session=session)
-    except Cart.DoesNotExist:
-        cart = None
+    except (Cart.DoesNotExist, TypeError) as e:
+       cart = None
     context['cart'] = cart
+    print('108', context['cart'])
     return context
 
 
 def cart(request):
     context = get_cart(request)
     cart = context['cart']
+    print('views115', cart)
     if cart:
         item_in_cart = ItemInCart.objects.filter(cart=cart)
+        print('views118')
     else:
         item_in_cart = None
+    if request.user.is_authenticated:
+        favorite = Favorites.objects.filter(user=request.user)
+        context['favorite'] = [fav.fav_item for fav in favorite]
+    else:
+        context['favorite'] = None
     context['item_in_cart'] = item_in_cart
     return render(request, 'person/cart.html', context=context)
 
@@ -125,3 +133,5 @@ def clear_cart(request):
     if cart:
         context['cart'].delete()
     return render(request, 'person/cart.html', context=context)
+
+

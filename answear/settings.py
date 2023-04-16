@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'acc',
     'person',
     'shop',
+    'checkout',
 ]
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
 
@@ -85,6 +86,7 @@ TEMPLATES = [
                 'django.contrib.messages.context_processors.messages',
                 'context_processors.context_processors.include_genders',
                 'context_processors.context_processors.include_header_types',
+                'context_processors.context_processors.include_brands',
                 "dynamic_breadcrumbs.context_processors.breadcrumbs",
             ],
         },

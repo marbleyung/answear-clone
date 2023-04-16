@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block title %} Login | Checkout {% endblock %}
+{% block content %}
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+<div class="container-flex">
+  <div class="login-block">
+    {% if error %}
+      <div class="alert alert-primary" role="alert">
+        {{ error }}
+      </div>
+    {% endif %}
+    <h1 class="login-title">I have an account</h1>
+    <form method="POST" action="{% url 'acc:login' %}" class="d-flex flex-column justify-content-center">
+      {% csrf_token %}
+      {{ login_form|crispy }}
+      <button class="btn btn-primary" type="submit">Login</button>
+    </form>
+    <p class="text-center"><a href="{% url 'acc:register' %}">Create an account</a></p>
+    <p class="text-center"><a href="{% url 'password_reset' %}">Password reset</a></p>
+    <form action="{% provider_login_url 'google' %}" method="post" class="d-flex justify-content-center">
+      {% csrf_token %}
+      <button class="btn btn-dark" type="submit"><i class="fa-brands fa-google"></i></button>
+    </form>
+  </div>
+  <div class="signup-info-block">
+    <h1 class="login-title">I don't have an account</h1>
+      <a href="{% url 'acc:register' %}" class="register-btn">Create an account</a>
+    <p><strong>Why you should create an account?</strong></p>
+    <ol>
+      <li>Lorem ipsum dolor sit amet</li>
+      <li>Lorem ipsum dolor sit amet</li>
+      <li>Lorem ipsum dolor sit amet</li>
+    </ol>
+    <a href="#" class="continue-wo-register-btn">Continue without registration</a>
+  </div>
+</div>
+{% endblock %}

@@ -11,6 +11,7 @@ urlpatterns = [
     path('search/<slug:gender_slug>/<slug:type_slug>/', SearchTypeView.as_view(), name='search_type'),
     path('search/<slug:gender_slug>/<slug:type_slug>/<slug:category_slug>/', SearchCategoryView.as_view(),
          name='search_category'),
+    path('b/<slug:brand_slug>', BrandView.as_view(), name='brand'),
     path('c/<slug:gender_slug>/', gender_view, name='gender'),
     path('c/<slug:gender_slug>/<slug:type_slug>/', type_view, name='type'),
     path('c/<slug:gender_slug>/<slug:type_slug>/<slug:category_slug>/', category_view, name='category'),

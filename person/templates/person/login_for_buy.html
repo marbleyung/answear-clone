@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %} Login {% endblock %}
+{% block content %} 
+{% load crispy_forms_tags %}
+{% load socialaccount %}
+
+<div class="container py-5">
+  {% if error %}
+    <div class="alert alert-primary" role="alert">
+      {{ error }}
+    </div>
+  {% endif %}
+  <h1>Login</h1>
+  <form method="POST" action="{% url 'acc:login' %}" class="d-flex flex-column justify-content-center">
+    {% csrf_token %}
+    {{ login_form|crispy }}
+    <button class="btn btn-primary" type="submit">Login</button>
+  </form>
+  <p class="text-center"><a href="{% url 'acc:register' %}">Create an account</a></p>
+  <p class="text-center"><a href="{% url 'password_reset' %}">Password reset</a></p>
+  <form action="{% provider_login_url 'google' %}" method="post" class="d-flex justify-content-center">
+    {% csrf_token %}
+    <button class="btn btn-dark" type="submit"><i class="fa-brands fa-google"></i></button>
+  </form>
+</div>
+
+{% endblock %}

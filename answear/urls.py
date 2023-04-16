@@ -27,6 +27,7 @@ urlpatterns = [
     path('', include('acc.urls', namespace='acc')),
     path('', include('person.urls', namespace='person')),
     path('', include('shop.urls', namespace='shop')),
+    path('checkout/', include('checkout.urls', namespace='checkout')),
     path('accounts/', include('allauth.urls')),
     path('password_change/done/',
          auth_views.PasswordChangeDoneView.as_view(template_name='password_reset/password_change_done.html'),

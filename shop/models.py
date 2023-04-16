@@ -56,8 +56,6 @@ class ItemSize(models.Model):
     def get_absolute_url(self):
         return reverse('gender', kwargs={'slug': self.slug})
 
-
-
 class ItemBrandSegment(models.Model):
     brand_segment = models.CharField(max_length=25, unique=True, null=True)
 
@@ -70,10 +68,13 @@ class ItemBrand(models.Model):
     segment = models.ManyToManyField(ItemBrandSegment)
     logo = models.ImageField(default=None)
     description = models.TextField(null=True, default=None)
+    slug = models.SlugField(null=True)
 
     def __str__(self):
         return self.brand
 
+    def get_absolute_url(self):
+        return reverse('brand', kwargs={'slug': self.slug})
 
 
 class ItemMaterial(models.Model):

@@ -1,15 +1,14 @@
 {% block content %}
 {% load crispy_forms_tags %}
-
-<span>Home -> Search for {{ query }} </span>
-    <br>
+<div class="search-menu">
     {% for gender, gender_value in d.items %}
         <h2><a href="{% url 'shop:search_gender' gender.slug %}?q={{ query }}">{{ gender }}</a></h2>
             {% for type, type_value in gender_value.items %}
-                <h3><a href="{% url 'shop:search_type' gender.slug type.slug %}?q={{ query }}">{{ type }}</a></h3>
+                <h5><a href="{% url 'shop:search_type' gender.slug type.slug %}?q={{ query }}">{{ type }}</a></h5>
                     {% for category in type_value %}
                         <p><a href="{% url 'shop:search_category' gender.slug type.slug category.slug %}?q={{ query }}">{{ category }}</a></p>
                     {% endfor %}
             {% endfor %}
     {% endfor %}
+</div>
 {% endblock %}

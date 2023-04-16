@@ -1,5 +1,4 @@
-from django.db import models
-from acc.models import *
+
 from shop.models import *
 
 

@@ -25,11 +25,10 @@ class SearchResultView(ListView):
     def get_context_data(self, *, object_list=None, **kwargs):
         context = super(SearchResultView, self).get_context_data(**kwargs)
         context['query'] = self.request.GET.get('q')
-        d = {}
+        d = {item.item_gender: {} for item in object_list}
         context['d'] = d
         object_list = self.get_queryset()
         for item in object_list:
-            d[item.item_gender] = {}
             d[item.item_gender][item.item_type] = list()
         print('views33')
         for item in object_list:
@@ -122,6 +121,33 @@ class SearchCategoryView(ListView):
         for item in object_list:
             d[item.item_gender][item.item_type] = list()
 
+        for item in object_list:
+            if item.item_category not in d[item.item_gender][item.item_type]:
+                d[item.item_gender][item.item_type].append(item.item_category)
+        return context
+
+
+class BrandView(ListView):
+    model = Item
+    template_name = 'search_nested.html'
+
+    def get_queryset(self):
+        brand_slug = self.kwargs['brand_slug']
+        brand = ItemBrand.objects.get(slug=brand_slug)
+        object_list = Item.objects.filter(item_brand=brand)
+        return object_list
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(BrandView, self).get_context_data(**kwargs)
+        object_list = self.get_queryset()
+        d = {item.item_gender: {} for item in object_list}
+        context['d'] = d
+        brand_slug = self.kwargs['brand_slug']
+        brand = ItemBrand.objects.get(slug=brand_slug)
+        context['brand'] = brand
+        context['query'] = brand_slug
+        for item in object_list:
+            d[item.item_gender][item.item_type] = list()
         for item in object_list:
             if item.item_category not in d[item.item_gender][item.item_type]:
                 d[item.item_gender][item.item_type].append(item.item_category)
@@ -250,15 +276,18 @@ def add_to_favorite(request, item_slug):
     item = Item.objects.get(slug=item_slug)
     favorites = Favorites.objects.filter(user=request.user)
     favorites = [fav.fav_item for fav in favorites]
+    referer = request.META.get("HTTP_REFERER")
+
     if item in favorites:
-        return redirect('shop:item', item_slug)
+        return HttpResponseRedirect(referer)
     object = Favorites.objects.create(fav_item=item)
-    return redirect('shop:item', item_slug)
+    return HttpResponseRedirect(referer)
 
 
 @login_required
 def delete_from_favorite(request, item_slug):
     item = Item.objects.get(slug=item_slug)
     Favorites.objects.get(fav_item=item, user=request.user).delete()
-    return redirect('shop:item', item_slug)
+    referer = request.META.get("HTTP_REFERER")
+    return HttpResponseRedirect(referer)
 

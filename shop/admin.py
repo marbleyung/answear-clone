@@ -53,13 +53,18 @@ class ItemStockAdmin(admin.ModelAdmin):
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
+class ItemBrandAdmin(admin.ModelAdmin):
+    model = ItemBrand
+    prepopulated_fields = {"slug": ("brand", ), }
+
+
 admin.site.register(ItemPicture, )
 admin.site.register(ItemGender, ItemGenderAdmin)
 admin.site.register(ItemType, ItemTypeAdmin)
 admin.site.register(ItemCategory, ItemCategoryAdmin)
 admin.site.register(ItemSize, ItemSizeAdmin)
 admin.site.register(ItemBrandSegment)
-admin.site.register(ItemBrand)
+admin.site.register(ItemBrand, ItemBrandAdmin)
 admin.site.register(ItemMaterial)
 admin.site.register(ItemColor)
 admin.site.register(ItemSeason)

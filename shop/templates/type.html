@@ -54,6 +54,8 @@
           <span>Home -> {{ gender }} -> {{ type }}</span>
         {% endif %} {% endfor %}
       {% for item in items %}
+            {% if item.quantity > 0 %}
+
       <div class="col-3">
       <div class="card" style="width: 18rem;">
         <a href="{% url 'shop:item' item.slug %}"><img src="{{ item.pictures.first.get_url }}" class="card-img-top" alt="{{ item.pictures.first }}"></a>
@@ -81,6 +83,7 @@
         </div>
         </div>
         </div>
+      {% endif %}
     {% endfor %}
   </div>
 </div>

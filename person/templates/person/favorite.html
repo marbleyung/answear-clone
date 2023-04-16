@@ -2,7 +2,34 @@
 {% block title %} My Favorite {% endblock %}
 {% load crispy_forms_tags %}
 {% block content %}
+<div class="container-fluid text-center">
+    <div class="row align-items-start">
+
 {% for fav in favorite %}
-    <img src="{{ fav.fav_item.pictures.first.get_url }}" class="product-photo" alt="{{ fav.fav_item.pictures.first }}">
+    {% if fav.fav_item.quantity > 0 %}
+    <div class="col-3">
+      <div class="card" style="width: 18rem;">
+        <a href="{% url 'shop:item' item_slug=fav.fav_item.slug %}">
+            <img src="{{ fav.fav_item.pictures.first.get_url }}" class="card-img-top" alt="{{ fav.fav_item.pictures.first }}"></a>
+                <div class="card-body">
+                    <a href="#"><h5 class="card-title">{{ fav.fav_item }}</h5></a>
+                </div>
+        </div>
+    </div>
+    {% else %}
+        <div class="col-3">
+            <div class="card" style="width: 18rem;">
+                <div id="overlay">
+                <img src="{{ fav.fav_item.pictures.first.get_url }}" class="card-img-top out-of-stock" alt="{{ fav.fav_item.pictures.first }}">
+                </div>
+                <div class="card-body">
+                        <a href="#"><h5 class="card-title">{{ fav.fav_item }}</h5></a>
+                    </div>
+                <p>This product is out of stock</p>
+            </div>
+        </div>
+    {% endif %}
 {% endfor %}
+    </div>
+    </div>
 {% endblock %}
