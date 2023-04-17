@@ -21,7 +21,7 @@ from django.contrib.auth import views as auth_views
 
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path('for-admin/', admin.site.urls),
     path('silk/', include('silk.urls', namespace='silk')),
     path('chaining/', include('smart_selects.urls')),
     path('', include('acc.urls', namespace='acc')),
